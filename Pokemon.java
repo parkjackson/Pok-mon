@@ -15,6 +15,19 @@ public class Pokemon {
   
 }
 
+class Pokemon {
+    String name;
+    String type;
+    String evolutionStage;
+    String color;
+    double height; // Height in meters
 
+    public Pokemon(String name, String type, String evolutionStage, String color, double height) {
+        this.name = name;
+        this.type = type;
+        this.evolutionStage = evolutionStage;
+        this.color = color;
+        this.height = height;
+    }
+}
 
-ArrayList<Integer> myList = new ArrayList<>();
