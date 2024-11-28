@@ -1,0 +1,76 @@
+//Combined code
+import java.util.*;
+
+public class PokemonGuessingGame {
+    static class Pokemon {
+        String name;
+        String color;
+        int height; // in cm
+        int evolutionStage; // 1 for first evolution, 2 for second, etc.
+
+        public Pokemon(String name, String color, int height, int evolutionStage) {
+            this.name = name;
+            this.color = color;
+            this.height = height;
+            this.evolutionStage = evolutionStage;
+        }
+    }
+
+    public static void main(String[] args) {
+        // Define Generation 1 Pokémon
+        List<Pokemon> pokedex = Arrays.asList(
+            new Pokemon("Bulbasaur", "Green", 70, 1),
+            new Pokemon("Ivysaur", "Green", 100, 2),
+            new Pokemon("Venusaur", "Green", 200, 3),
+            new Pokemon("Charmander", "Red", 60, 1),
+            new Pokemon("Charmeleon", "Red", 110, 2),
+            new Pokemon("Charizard", "Red", 170, 3),
+            new Pokemon("Squirtle", "Blue", 50, 1),
+            new Pokemon("Wartortle", "Blue", 100, 2),
+            new Pokemon("Blastoise", "Blue", 160, 3)
+        );
+
+        // Randomly select a target Pokémon
+        Random random = new Random();
+        Pokemon targetPokemon = pokedex.get(random.nextInt(pokedex.size()));
+
+        // Game setup
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to the Pokémon Guessing Game!");
+        System.out.println("Try to guess the randomly chosen Pokémon from Generation 1.");
+        System.out.println("You will get feedback on your guesses to help you narrow it down.");
+
+        boolean guessedCorrectly = false;
+
+        while (!guessedCorrectly) {
+            // Prompt user for a guess
+            System.out.print("\nEnter your guess (e.g., Bulbasaur): ");
+            String userGuess = scanner.nextLine().trim();
+
+            // Find guessed Pokémon in the pokedex
+            Optional<Pokemon> guessedPokemonOpt = pokedex.stream()
+                .filter(p -> p.name.equalsIgnoreCase(userGuess))
+                .findFirst();
+
+            if (guessedPokemonOpt.isPresent()) {
+                Pokemon guessedPokemon = guessedPokemonOpt.get();
+
+                // Check if the guess is correct
+                if (guessedPokemon.name.equalsIgnoreCase(targetPokemon.name)) {
+                    System.out.println("🎉 Correct! You guessed the Pokémon: " + targetPokemon.name);
+                    guessedCorrectly = true;
+                } else {
+                    // Provide feedback
+                    System.out.println("❌ Wrong Pokémon! Here's your feedback:");
+                    System.out.println("  Evolution Stage Match: " + (guessedPokemon.evolutionStage == targetPokemon.evolutionStage));
+                    System.out.println("  Color Match: " + guessedPokemon.color.equalsIgnoreCase(targetPokemon.color));
+                    System.out.println("  Height Match: " + (guessedPokemon.height == targetPokemon.height));
+                }
+            } else {
+                System.out.println("⚠️ Pokémon not found in the list! Make sure you spell it correctly and try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
