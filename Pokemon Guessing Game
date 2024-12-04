@@ -1,320 +1,145 @@
-//Combined code
+package src;
 import java.util.*;
+import javax.swing.*;
+import src.Pokedex.*;
 
-public class PokemonGuessingGame {
-    static class Pokemon {
-        String name;
-        String color;
-        int height; // in cm
-        int evolutionStage; // 1 for first evolution, 2 for second, etc.
+public class game{
 
-        public Pokemon(String name, String color, int height, int evolutionStage) {
-            this.name = name;
-            this.color = color;
-            this.height = height;
-            this.evolutionStage = evolutionStage;
-        }
-    }
+        public static void main(String[] args) {
+            
 
-    public static void main(String[] args) {
-        // Define Generation 1 Pokémon
-        List<Pokemon> pokedex = Arrays.asList(
-            new Pokemon("Bulbasaur", "Green", 70, 1),
-            new Pokemon("Ivysaur", "Green", 100, 2),
-            new Pokemon("Venusaur", "Green", 200, 3),
-            new Pokemon("Charmander", "Red", 60, 1),
-            new Pokemon("Charmeleon", "Red", 110, 2),
-            new Pokemon("Charizard", "Red", 170, 3),
-            new Pokemon("Squirtle", "Blue", 50, 1),
-            new Pokemon("Wartortle", "Blue", 100, 2),
-            new Pokemon("Blastoise", "Blue", 160, 3)
-        );
+            //MENU 
+            starts s = new starts();
+            s.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            s.setVisible(true);
+            s.setSize(300, 400);
+            s.setTitle("Pokemon Guessing Game!");;
 
-        // Randomly select a target Pokémon
-        Random random = new Random();
-        Pokemon targetPokemon = pokedex.get(random.nextInt(pokedex.size()));
+            //putting color into terminal
+            final String RESET = "\u001B[0m";
+            final String RED = "\u001B[31m";
+            final String GREEN = "\u001B[32m";
+            final String YELLOW = "\u001B[33m";
+            final String BLUE = "\u001B[34m";
+            final String PINK = "\u001B[35m";
+            final String CYAN = "\u001B[36m";
 
-        // Game setup
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Pokémon Guessing Game!");
-        System.out.println("Try to guess the randomly chosen Pokémon from Generation 1.");
-        System.out.println("You will get feedback on your guesses to help you narrow it down.");
+            //initialize pokedex
+            Pokedex.ListOfPokemon list = new Pokedex.ListOfPokemon();
+            List<Pokedex.Pokemon> pokedexList = list.getPokedex();
+            
 
-        boolean guessedCorrectly = false;
-
-        while (!guessedCorrectly) {
-            // Prompt user for a guess
-            System.out.print("\nEnter your guess (e.g., Bulbasaur): ");
-            String userGuess = scanner.nextLine().trim();
-
-            // Find guessed Pokémon in the pokedex
-            Optional<Pokemon> guessedPokemonOpt = pokedex.stream()
-                .filter(p -> p.name.equalsIgnoreCase(userGuess))
-                .findFirst();
-
-            if (guessedPokemonOpt.isPresent()) {
-                Pokemon guessedPokemon = guessedPokemonOpt.get();
-
-                // Check if the guess is correct
-                if (guessedPokemon.name.equalsIgnoreCase(targetPokemon.name)) {
-                    System.out.println("🎉 Correct! You guessed the Pokémon: " + targetPokemon.name);
-                    guessedCorrectly = true;
-                } else {
-                    // Provide feedback
-                    System.out.println("❌ Wrong Pokémon! Here's your feedback:");
-                    System.out.println("  Evolution Stage Match: " + (guessedPokemon.evolutionStage == targetPokemon.evolutionStage));
-                    System.out.println("  Color Match: " + guessedPokemon.color.equalsIgnoreCase(targetPokemon.color));
-                    System.out.println("  Height Match: " + (guessedPokemon.height == targetPokemon.height));
+            // Game setup
+            java.util.Scanner scanner = new Scanner(System.in);
+            System.out.println();
+            System.out.println();
+            System.out.println(CYAN + "WELCOME" + RESET + " to the" + YELLOW + " Pokemon Guessing Game!" + RESET);
+            System.out.println();
+            System.out.println("Try to guess the randomly chosen Pokemon from Generation One.");
+            System.out.println(BLUE + "You will get feedback on your guesses to help you narrow it down." + RESET);
+            System.out.println(GREEN + "For each correct guess the Pokemon will be removed, get down to 0 Pokemon and you beat the game!" + RESET);
+            System.out.println("Type " + RED + "'exit'" + RESET + "to quit the game.");
+            System.out.println();
+        
+            while (true) {
+                // Randomly select a target Pokemon
+                Random random = new Random();
+                int i = pokedexList.size();
+                if (pokedexList.isEmpty()) {        //first thing first, if list is empty that means you beat the game! so itll stop
+                    System.out.println();
+                    System.out.println(YELLOW + "Congratulations!" + RESET + " You've guessed all the Pokemon!" + CYAN + " ReRun the Program" + RESET+ " to Start Again!");
+                    break;
                 }
-            } else {
-                System.out.println("⚠️ Pokémon not found in the list! Make sure you spell it correctly and try again.");
-            }
-        }
+                Pokemon targetPokemon = pokedexList.get(random.nextInt(pokedexList.size()));
+        
+                boolean guessedCorrectly = false;
+        
+                while (!guessedCorrectly) {
+                    // Prompt user for a guess
+                    System.out.println(YELLOW + "Pokemon " + RESET +  "Left: " + i);
+                    System.out.print("Enter your guess(" + RED + "example... " + RESET + GREEN + " Bulbasaur" + RESET + "): ");
+                    String userGuess = scanner.nextLine().trim(); //next line waits for user to press enter before anything happens, trim allows for extra spaced to be cut (if user says "   pikachu" itll return "pikachu")
+                    System.out.println();
 
-        scanner.close();
-    }
+                    // Allow the user to exit
+                    if (userGuess.equalsIgnoreCase("exit")) {
+                        System.out.println();
+                        System.out.println("Thanks for playing!");
+                        scanner.close();
+                         System.exit(0); //when exiting, status 0 means program ended without any problems
+                    }
+        
+                    // Find guessed pokemon in the pokedex
+                    Optional<Pokemon> guessedPokemonOpt = pokedexList.stream() //by converting the list to a stream we can use the filtering option
+                            .filter(p -> p.name.equalsIgnoreCase(userGuess)) //this filter allows for the program to check if the pokemon (p) is the same as the user's guess but also makes it so a capitolized "Pikachu" is the same as a normal "pikachu" because it ignores capitolization
+                            .findFirst(); //will find the first pokemon name that matches with the user guess 
+                   
+                        if (guessedPokemonOpt.isPresent()) {
+                        Pokemon guessedPokemon = guessedPokemonOpt.get();
+        
+                        // Check if the guess is correct
+                        if (guessedPokemon.name.equalsIgnoreCase(targetPokemon.name)) {
+                            System.out.println();
+                            System.out.println(GREEN + "Correct! You guessed the Pokémon: " + RESET + targetPokemon.name);
+                            guessedCorrectly = true;
+                            System.out.println("Starting a new round with a new Pokemon...");
+                            System.out.println();
+                            pokedexList = recursion.remove(new ArrayList<>(pokedexList), targetPokemon, pokedexList.size() - 1);
+                        }
+                            else {
+                            // Provide feedback
+                            System.out.println(RED + "Wrong Pokémon! Use these cluse to guess ur next Pokemon" + RESET);
+
+                            //Evolution stage feedback
+                            if(guessedPokemon.evolutionStage > targetPokemon.evolutionStage) {
+                                System.out.println(PINK + "  Evolution Stage Match: " + RESET + "Your evolution stage is too" + RED + " HIGH!" + RESET);
+                            }
+                            else if(guessedPokemon.evolutionStage < targetPokemon.evolutionStage){
+                                System.out.println(PINK + "  Evolution Stage Match: " + RESET + "Your evolution stage is too" + RED + " LOW!" + RESET);
+                            }
+                            else if(guessedPokemon.evolutionStage == targetPokemon.evolutionStage){
+                                System.out.println(PINK + "  Evolution Stage Match: " + RESET + (guessedPokemon.evolutionStage == targetPokemon.evolutionStage));
+                            }
+
+                            //Color matching feedback
+                            if(!guessedPokemon.color.equalsIgnoreCase(targetPokemon.color)){
+                                System.out.println();
+                                System.out.println(YELLOW + "  Color Match: " + RESET + guessedPokemon.name + " is " + guessedPokemon.color + " it " + RED + "DOES NOT" + RESET + " match the target Pokemon's color");
+                            }
+                            else if(guessedPokemon.color.equalsIgnoreCase(targetPokemon.color)) {
+                                System.out.println();
+                            System.out.println(YELLOW + "  Color Match: " + RESET + guessedPokemon.color.equalsIgnoreCase(targetPokemon.color));
+                            }
+
+                            //height feedback
+                            if (guessedPokemon.height > targetPokemon.height) {
+                                System.out.println();
+                                System.out.println(CYAN + "  Height Match: " + RESET + "The height of " + guessedPokemon.name + " is" + RED + " taller than" + RESET + " the mystery Pokemon!");
+                                System.out.println();
+                                System.out.println();
+                            } 
+                            else if (guessedPokemon.height < targetPokemon.height) {
+                                System.out.println();
+                               System.out.println(CYAN + "  Height Match: " + RESET + "The height of " + guessedPokemon.name + " is" + RED + " shorter than" + RESET + " the mystery Pokemon!");
+                               System.out.println();
+                               System.out.println();
+                            }
+                            else if (guessedPokemon.height == targetPokemon.height) {
+                                System.out.println();
+                                System.out.println(CYAN + "  Height Match: " + RESET + (guessedPokemon.height == targetPokemon.height ));
+                                System.out.println();
+                                System.out.println();
+                            }
+                        }
+                    }   
+                        else {
+                            System.out.println();
+                            System.out.println(RED + "Pokemon not found in the list! Make sure you spell it correctly and try again." + RESET);
+                            System.out.println();
+                            System.out.println();
+                            }
+                    } 
+                }            
+            scanner.close();
+        }
 }
-
-
-
-_______________________________________________________________________________________________________________________________________
-// Code with the pokedex class and all the pokemons
-
-import java.util.*;
-
-public class PokemonGuessingGame {
-    // Inner class representing a Pokémon
-    static class Pokemon {
-        String name;
-        String color;
-        int height; // in cm
-        int evolutionStage; // 1 for first evolution, 2 for second, etc.
-
-        public Pokemon(String name, String color, int height, int evolutionStage) {
-            this.name = name;
-            this.color = color;
-            this.height = height;
-            this.evolutionStage = evolutionStage;
-        }
-    }
-
-    // Inner class representing the Pokedex
-    static class Pokedex {
-        private List<Pokemon> pokemonList; // Use List interface for flexibility
-
-        public Pokedex() {
-            pokemonList = new ArrayList<>();
-            initializePokedex(); // Populate the Pokedex
-        }
-
-        // Method to initialize the Pokedex with Pokémon
-        private void initializePokedex() {
-            pokemonList.add(new Pokemon("Bulbasaur", "Green", 70, 1));
-            pokemonList.add(new Pokemon("Ivysaur", "Green", 100, 2));
-            pokemonList.add(new Pokemon("Venusaur", "Green", 200, 3));
-            pokemonList.add(new Pokemon("Charmander", "Red", 60, 1));
-            pokemonList.add(new Pokemon("Charmeleon", "Red", 110, 2));
-            pokemonList.add(new Pokemon("Charizard", "Red", 170, 3));
-            pokemonList.add(new Pokemon("Squirtle", "Blue", 50, 1));
-            pokemonList.add(new Pokemon("Wartortle", "Blue", 100, 2));
-            pokemonList.add(new Pokemon("Blastoise", "Blue", 160, 3));
-            pokemonList.add(new Pokemon("Caterpie", "Green", 30,1));
-            pokemonList.add(new Pokemon("Metapod",  "Green", 70,2));
-            pokemonList.add(new Pokemon("Butterfree", "Purple", 110,3));
-            pokemonList.add(new Pokemon("Weedle",  "Yellow", 30,1));
-            pokemonList.add(new Pokemon("Kakuna",  "Yellow", 60,2));
-            pokemonList.add(new Pokemon("Beedrill",  "Yellow", 100,3));
-            pokemonList.add(new Pokemon("Pidgey",  "Brown", 30,1));
-            pokemonList.add(new Pokemon("Pidgeotto",  "Brown", 110,2));
-            pokemonList.add(new Pokemon("Pidgeot", "Brown", 150,3));
-            pokemonList.add(new Pokemon("Rattata", "Purple", 30,1));
-            pokemonList.add(new Pokemon("Raticate", "Brown", 70,2));
-            pokemonList.add(new Pokemon("Spearow","Brown", 30,1));
-            pokemonList.add(new Pokemon("Fearow", "Brown", 120,2));
-            pokemonList.add(new Pokemon("Ekans", "Purple", 200,1));
-            pokemonList.add(new Pokemon("Arbok",  "Purple", 350,2));
-            pokemonList.add(new Pokemon("Pikachu","Yellow", 40,1));
-            pokemonList.add(new Pokemon("Raichu",  "Orange", 80,2));
-            pokemonList.add(new Pokemon("Sandshrew","Yellow", 60,1));
-            pokemonList.add(new Pokemon("Sandslash","Yellow", 100,2));
-            pokemonList.add(new Pokemon("Nidoran♀", "Blue", 40,1));
-            pokemonList.add(new Pokemon("Nidorina","Blue", 80,2));
-            pokemonList.add(new Pokemon("Nidoqueen", "Blue", 130,3));
-            pokemonList.add(new Pokemon("Nidoran ♂","Purple", 50,1));
-            pokemonList.add(new Pokemon("Nidorino",  "Purple", 90,2));
-            pokemonList.add(new Pokemon("Nidoking", "Purple", 140,3));
-            pokemonList.add(new Pokemon("Clefairy",  "Pink", 60,1));
-            pokemonList.add(new Pokemon("Clefable", "Pink", 130,2));
-            pokemonList.add(new Pokemon("Vulpix", "Brown", 60,1));
-            pokemonList.add(new Pokemon("Ninetales","Yellow", 110,2));
-            pokemonList.add(new Pokemon("Jigglypuff", "Pink", 50,1));
-            pokemonList.add(new Pokemon("Wigglytuff", "Pink", 100,2));
-            pokemonList.add(new Pokemon("Zubat", "Purple", 80,1));
-            pokemonList.add(new Pokemon("Golbat","Purple", 160,2));
-            pokemonList.add(new Pokemon("Oddish","Blue", 50,1));
-            pokemonList.add(new Pokemon("Gloom", "Blue", 80,2));
-            pokemonList.add(new Pokemon("Vileplume", "Red", 120,3));
-            pokemonList.add(new Pokemon("Paras", "Orange", 30,1));
-            pokemonList.add(new Pokemon("Parasect","Orange", 100,2));
-            pokemonList.add(new Pokemon("Venonat", "Purple", 100,1));
-            pokemonList.add(new Pokemon("Venomoth",  "Purple", 150,2));
-            pokemonList.add(new Pokemon("Diglett", "Brown", 20,1));
-            pokemonList.add(new Pokemon("Dugtrio", "Brown", 70,2));
-            pokemonList.add(new Pokemon("Meowth", "Yellow", 40,1));
-            pokemonList.add(new Pokemon("Persian", "Yellow", 100,2));
-            pokemonList.add(new Pokemon("Psyduck", "Yellow", 80,1));
-            pokemonList.add(new Pokemon("Golduck","Blue", 170,2));
-            pokemonList.add(new Pokemon("Mankey", "Brown", 50,1));
-            pokemonList.add(new Pokemon("Primeape",  "Brown", 100,2));
-            pokemonList.add(new Pokemon("Growlithe",  "Orange", 70,1));
-            pokemonList.add(new Pokemon("Arcanine","Orange", 190,2));
-            pokemonList.add(new Pokemon("Poliwag", "Blue", 60,1));
-            pokemonList.add(new Pokemon("Poliwhirl", "Blue", 100,2));
-            pokemonList.add(new Pokemon("Poliwrath",  "Blue", 130,3));
-            pokemonList.add(new Pokemon("Abra", "Yellow", 90,1));
-            pokemonList.add(new Pokemon("Kadabra",  "Yellow", 130,2));
-            pokemonList.add(new Pokemon("Alakazam", "Yellow", 150,0));
-            pokemonList.add(new Pokemon("Machop",  "Gray", 80,1));
-            pokemonList.add(new Pokemon("Machoke",  "Gray", 150,2));
-            pokemonList.add(new Pokemon("Machamp", "Gray", 160,3));
-            pokemonList.add(new Pokemon("Bellsprout", "Yellow", 70,1));
-            pokemonList.add(new Pokemon("Weepinbell","Green", 100,2));
-            pokemonList.add(new Pokemon("Victreebel",  "Green", 170,0));
-            pokemonList.add(new Pokemon("Tentacool", "Blue", 90,1));
-            pokemonList.add(new Pokemon("Tentacruel", "Purple", 160,2));
-            pokemonList.add(new Pokemon("Geodude", "Gray", 40,1));
-            pokemonList.add(new Pokemon("Graveler", "Gray", 100,2));
-            pokemonList.add(new Pokemon("Golem", "Brown", 140,3));
-            pokemonList.add(new Pokemon("Ponyta", "Orange", 80,1));
-            pokemonList.add(new Pokemon("Rapidash", "Orange", 170,2));
-            pokemonList.add(new Pokemon("Slowpoke", "Pink", 120,1));
-            pokemonList.add(new Pokemon("Slowbro", "Pink", 160,2));
-            pokemonList.add(new Pokemon("Magnemite", "Gray", 30,1));
-            pokemonList.add(new Pokemon("Magneton", "Gray", 100,2));
-            pokemonList.add(new Pokemon("Farfetch'd", "Brown", 60,1));
-            pokemonList.add(new Pokemon("Doduo",  "Brown", 140,1));
-            pokemonList.add(new Pokemon("Dodrio", "Brown", 180,2));
-            pokemonList.add(new Pokemon("Seel", "White", 110,1));
-            pokemonList.add(new Pokemon("Dewgong", "White", 170,2));
-            pokemonList.add(new Pokemon("Grimer", "Purple", 90,1));
-            pokemonList.add(new Pokemon("Muk","Purple", 120,2));
-            pokemonList.add(new Pokemon("Shellder", "Purple", 30,1));
-            pokemonList.add(new Pokemon("Cloyster", "Purple", 150,2));
-            pokemonList.add(new Pokemon("Gastly", "Purple", 130,1));
-            pokemonList.add(new Pokemon("Haunter", "Purple", 160,2));
-            pokemonList.add(new Pokemon("Gengar", "Purple", 150,3));
-            pokemonList.add(new Pokemon("Onix","Gray", 880,1));
-            pokemonList.add(new Pokemon("Drowzee", "Yellow", 60,1));
-            pokemonList.add(new Pokemon("Hypno", "Yellow", 160,2));
-            pokemonList.add(new Pokemon("Krabby", "Red", 40,1));
-            pokemonList.add(new Pokemon("Kingler","Red", 130,2));
-            pokemonList.add(new Pokemon("Voltrob","Red", 50,1));
-            pokemonList.add(new Pokemon("Electrode","Red", 120,2));
-            pokemonList.add(new Pokemon("Exeggcute", "Green", 40,1));
-            pokemonList.add(new Pokemon("Exeggutor", "Yellow", 200,2));
-            pokemonList.add(new Pokemon("Cubone", "Brown", 40,1));
-            pokemonList.add(new Pokemon("Marowak",  "Brown", 100,2));
-            pokemonList.add(new Pokemon("Hitmonlee",  "Brown", 150,1));
-            pokemonList.add(new Pokemon("Hitmonchan",  "Brown", 140,1));
-            pokemonList.add(new Pokemon("Lickitung", "Pink", 120,1));
-            pokemonList.add(new Pokemon("Koffing", "Purple", 60,1));
-            pokemonList.add(new Pokemon("Weezing",  "Purple", 120,2));
-            pokemonList.add(new Pokemon("Rhyhorn",  "Gray", 80,1));
-            pokemonList.add(new Pokemon("Rhydon",  "Gray", 100,2));
-            pokemonList.add(new Pokemon("Chansey","Pink", 110,1));
-            pokemonList.add(new Pokemon("Tangela", "Blue", 100,1));
-            pokemonList.add(new Pokemon("Kangaskhan", "Brown", 220,1));
-            pokemonList.add(new Pokemon("Horsea", "Blue", 40,1));
-            pokemonList.add(new Pokemon("Seadra",  "Blue", 120,2));
-            pokemonList.add(new Pokemon("Goldeen",  "Orange", 60,1));
-            pokemonList.add(new Pokemon("Seaking","Orange", 130,2));
-            pokemonList.add(new Pokemon("Staryu","Red", 80,1));
-            pokemonList.add(new Pokemon("Starmie", "Purple", 110,2));
-            pokemonList.add(new Pokemon("Mr. Mime", "Pink", 130,1));
-            pokemonList.add(new Pokemon("Scyther", "Green", 150,1));
-            pokemonList.add(new Pokemon("Jynx", "Purple", 140,1));
-            pokemonList.add(new Pokemon("Electabuzz","Yellow", 110,1));
-            pokemonList.add(new Pokemon("Magmar", "Red", 130,1));
-            pokemonList.add(new Pokemon("Pinsir","Green", 150,1));
-            pokemonList.add(new Pokemon("Tauros","Brown", 140,1));
-            pokemonList.add(new Pokemon("Magikarp", "Orange", 90,1));
-            pokemonList.add(new Pokemon("Gyarados",  "Blue", 650,2));
-            pokemonList.add(new Pokemon("Lapras", "Blue", 250,1));
-            pokemonList.add(new Pokemon("Ditto", "Purple", 30,1));
-            pokemonList.add(new Pokemon("Eevee", "Brown", 30,1));
-            pokemonList.add(new Pokemon("Vaporeon", "Blue", 100,2));
-            pokemonList.add(new Pokemon("Jolteon",  "Yellow", 80,2));
-            pokemonList.add(new Pokemon("Flareon", "Orange", 90,2));
-            pokemonList.add(new Pokemon("Porygon", "Red", 80,1));
-            pokemonList.add(new Pokemon("Omanyte", "Blue", 40,1));
-            pokemonList.add(new Pokemon("Omastar", "Blue", 100,2));
-            pokemonList.add(new Pokemon("Kabuto", "Orange", 50,1));
-            pokemonList.add(new Pokemon("Kabutops", "Orange", 130,2));
-            pokemonList.add(new Pokemon("Aerodactyl", "Gray", 180,1));
-            pokemonList.add(new Pokemon("Snorlax", "Blue", 210,1));
-            pokemonList.add(new Pokemon("Articuno", "Blue", 170,1));
-            pokemonList.add(new Pokemon("Zapdos", "Yellow", 160,1));
-            pokemonList.add(new Pokemon("Moltres", "Fire", 200,1));
-            pokemonList.add(new Pokemon("Dratini", "Blue", 180,1));
-            pokemonList.add(new Pokemon("Dragoniar", "Blue", 400,2));
-            pokemonList.add(new Pokemon("Dragonite", "Orange", 220,0));
-            pokemonList.add(new Pokemon("Mewtwo", "Purple", 200,1));
-            pokemonList.add(new Pokemon("Mew", "Purple", 40,1));
-        }
-
-        // Method to retrieve the Pokémon list
-        public List<Pokemon> getPokemonList() {
-            return pokemonList; // Return the List interface
-        }
-    }
-
-    public static void main(String[] args) {
-        // Initialize the Pokedex
-        Pokedex pokedex = new Pokedex();
-        List<Pokemon> pokemonList = pokedex.getPokemonList(); // Retrieve the Pokémon list
-
-        // Randomly select a target Pokémon
-        Random random = new Random();
-        Pokemon targetPokemon = pokemonList.get(random.nextInt(pokemonList.size()));
-
-        // Game setup
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Pokémon Guessing Game!");
-        System.out.println("Try to guess the randomly chosen Pokémon from Generation 1.");
-        System.out.println("You will get feedback on your guesses to help you narrow it down.");
-
-        boolean guessedCorrectly = false;
-
-        while (!guessedCorrectly) {
-            // Prompt user for a guess
-            System.out.print("\nEnter your guess (e.g., Bulbasaur): ");
-            String userGuess = scanner.nextLine().trim();
-
-            // Find guessed Pokémon in the Pokedex
-            Optional<Pokemon> guessedPokemonOpt = pokemonList.stream()
-                    .filter(p -> p.name.equalsIgnoreCase(userGuess))
-                    .findFirst();
-
-            if (guessedPokemonOpt.isPresent()) {
-                Pokemon guessedPokemon = guessedPokemonOpt.get();
-
-                // Check if the guess is correct
-                if (guessedPokemon.name.equalsIgnoreCase(targetPokemon.name)) {
-                    System.out.println("🎉 Correct! You guessed the Pokémon: " + targetPokemon.name);
-                    guessedCorrectly = true;
-                } else {
-                    // Provide feedback
-                    System.out.println("❌ Wrong Pokémon! Here's your feedback:");
-                    System.out.println("  Evolution Stage Match: " + (guessedPokemon.evolutionStage == targetPokemon.evolutionStage));
-                    System.out.println("  Color Match: " + guessedPokemon.color.equalsIgnoreCase(targetPokemon.color));
-                    System.out.println("  Height Match: " + (guessedPokemon.height == targetPokemon.height));
-                }
-            } else {
-                System.out.println("⚠️ Pokémon not found in the list! Make sure you spell it correctly and try again.");
-            }
-        }
-
-        scanner.close();
-    }
-}
-
