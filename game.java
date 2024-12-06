@@ -1,7 +1,7 @@
 package src;
 import java.util.*;
 import javax.swing.*;
-import src.Pokedex.*;
+
 
 public class game{
 
@@ -12,7 +12,7 @@ public class game{
             starts s = new starts();
             s.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             s.setVisible(true);
-            s.setSize(300, 400);
+            s.setSize(370, 450);
             s.setTitle("Pokemon Guessing Game!");;
 
             //putting color into terminal
@@ -25,20 +25,22 @@ public class game{
             final String CYAN = "\u001B[36m";
 
             //initialize pokedex
-            Pokedex.ListOfPokemon list = new Pokedex.ListOfPokemon();
-            List<Pokedex.Pokemon> pokedexList = list.getPokedex();
+            Pokedex pokedex = new Pokedex();
+            Pokedex.ListOfPokemon list = pokedex.new ListOfPokemon();
+            List<Pokemon> pokedexList = list.getPokedex();
             
 
-            // Game setup
+            // Game setup welcome text
             java.util.Scanner scanner = new Scanner(System.in);
             System.out.println();
             System.out.println();
             System.out.println(CYAN + "WELCOME" + RESET + " to the" + YELLOW + " Pokemon Guessing Game!" + RESET);
             System.out.println();
-            System.out.println("Try to guess the randomly chosen Pokemon from Generation One.");
-            System.out.println(BLUE + "You will get feedback on your guesses to help you narrow it down." + RESET);
-            System.out.println(GREEN + "For each correct guess the Pokemon will be removed, get down to 0 Pokemon and you beat the game!" + RESET);
-            System.out.println("Type " + RED + "'exit'" + RESET + "to quit the game.");
+            System.out.println("Try to guess the " + PINK + "randomly chosen" + RESET + YELLOW + " Pokemon " + RESET + "from " + BLUE + "Generation One" + RESET + ".");
+            System.out.println("You will get" + BLUE + " feedback" + RESET + " on your guesses to " + GREEN + "help you narrow it down." + RESET);
+            System.out.println("For each " + GREEN + "correct " + RESET + "guess the" + YELLOW + " Pokemon " + RESET + "will be "  + RED + "removed " + RESET + ", get down to " + RED + " 0 " + RESET + YELLOW + "Pokemon " + RESET + "and you beat the game!");
+            System.out.println("Type " + RED + "'exit' " + RESET + "to quit the game.");
+            System.out.println();
             System.out.println();
         
             while (true) {
@@ -50,7 +52,7 @@ public class game{
                     System.out.println(YELLOW + "Congratulations!" + RESET + " You've guessed all the Pokemon!" + CYAN + " ReRun the Program" + RESET+ " to Start Again!");
                     break;
                 }
-                Pokemon targetPokemon = pokedexList.get(random.nextInt(pokedexList.size()));
+                Pokemon targetPokemon = pokedexList.get(random.nextInt(pokedexList.size())); //target pokemon = random pokemon
         
                 boolean guessedCorrectly = false;
         
@@ -61,7 +63,7 @@ public class game{
                     String userGuess = scanner.nextLine().trim(); //next line waits for user to press enter before anything happens, trim allows for extra spaced to be cut (if user says "   pikachu" itll return "pikachu")
                     System.out.println();
 
-                    // Allow the user to exit
+                    //  the user can exit if they want
                     if (userGuess.equalsIgnoreCase("exit")) {
                         System.out.println();
                         System.out.println("Thanks for playing!");
@@ -87,7 +89,7 @@ public class game{
                             pokedexList = recursion.remove(new ArrayList<>(pokedexList), targetPokemon, pokedexList.size() - 1);
                         }
                             else {
-                            // Provide feedback
+                            // give feedback
                             System.out.println(RED + "Wrong Pokémon! Use these cluse to guess ur next Pokemon" + RESET);
 
                             //Evolution stage feedback
