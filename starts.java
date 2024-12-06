@@ -23,7 +23,7 @@ public class starts extends JFrame {
         label = new JLabel("");
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(label);
-        add(Box.createRigidArea(new Dimension(170, 20)));
+        add(Box.createRigidArea(new Dimension(170, 30)));
 
         button2 = new JButton("Click here to see the rules!");
         button2.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -31,7 +31,7 @@ public class starts extends JFrame {
         label2 = new JLabel("");
         label2.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(label2);
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 30)));
         
         button3 = new JButton("Where do I play?");
         button3.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -81,7 +81,7 @@ public class starts extends JFrame {
     public class start2 implements ActionListener {
         public void actionPerformed(ActionEvent t) {
             if (y == 0) {
-                label2.setText("<html> Type in your guess to try and catch the mystery Pokemon from Generation One! <br>   You get Unlimited tries, so use the clues from each wrong guess. <br>    Each correct guess will remove the Pokemon. <br>   Guess all of them and you WIN!");
+                label2.setText("<html> Type in your guess to try and catch the mystery Pokemon from Generation One! <br>   You get Unlimited tries, so use the clues from each wrong guess. <br>    Each correct guess will remove the Pokemon. <br>   Guess all of them and you WIN! <br> for the Nidoran male and femal type 'Nidoran M' and 'Nidoran F'");
                 y = 1;
             } else if (y == 1) {
                 label2.setText("");
